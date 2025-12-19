@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Symptom Checker</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("/static/bg.jpeg");
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+        .box {
+            width: 400px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        h2 { text-align: center; }
+        #chat { max-height: 400px; overflow-y: auto; margin-bottom: 10px; }
+        .user { color: blue; font-family: monospace; margin: 5px 0; }
+        .bot { color: green; font-family: monospace; margin: 5px 0; }
+        #msg { width: 70%; padding: 8px; }
+        button { padding: 8px 12px; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2>Symptom Checker</h2>
+    <div id="chat"></div>
+
+    <input id="msg" placeholder="Type here">
+    <button onclick="sendMsg()">Send</button>
+</div>
+
+<script>
+const input = document.getElementById("msg");
+
+input.addEventListener("keydown", function(event) {
+    if (event.key === "Enter") sendMsg();
+});
+
+function sendMsg() {
+    const chat = document.getElementById("chat");
+    const text = input.value.trim();
+    if (!text) return;
+
+    // Use backticks for template literals
+    chat.innerHTML += `<div class="user">You: ${text}</div>`;
+    input.value = "";
+
+    fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+    })
+    .then(res => res.json())
+    .then(data => {
+        chat.innerHTML += `<div class="bot">Bot: ${data.reply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+    })
+    .catch(err => {
+        chat.innerHTML += `<div class="bot">Error connecting to server</div>`;
+        console.error(err);
+    });
+}
+</script>
+</body>
+</html>
+
+
+
