@@ -132,7 +132,7 @@ def chatbot_response(user_input):
     if any(word in user_input for word in ["thank you","thanks","thx", "thanku","thankyou","bye","goodbye","see you later","c ya"]):
         return f"You're welcome! Take care and stay healthy."
 
-    return f"I didn't understand. Try 'symptoms of dengue' or 'I have fever'."
+    return f"I didn't understand. Try 'symptoms of dengue' or 'I have \"symptom\"'."
 
 @app.route("/")
 def home():
@@ -151,4 +151,4 @@ def chat():
         return jsonify({"reply": "Server error"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(host="0.0.0.0", port=5000)
